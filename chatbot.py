@@ -1,3 +1,5 @@
+# For Simple Chat and Some Useful Answers Fetch From Different Apis
+
 import webbrowser as wb
 import wikipedia as wiki
 import calendar
@@ -43,6 +45,8 @@ greeting_msg_answer = ['i am good and how are you?', 'good how\'s about you?',
 user_ans = ['i am good', 'good', 'i am perfect','i am also good','i am also perfect','nice','perfect ',
             'perfect', 'good and thanks', 'me good', 'me perfect', 'me nice']
 
+Helping_msg = ['help','more','info','about','what you can do']
+
 thanks_msg = ['Thanks', 'Nice', 'perfect', 'good']
 
 info_msg = ['tell me about yourself?', 'whats your name?',
@@ -58,7 +62,7 @@ date_msg = ['date','date ','what is date','date?','today?','today','today ','dat
 
 time_msg = ['time','time ','what is time','time?','time?','today','today ','time now ','time now']
 
-text = greeting_msg_ques + greeting_text_ques + user_ans + date_msg+time_msg
+text = greeting_msg_ques + greeting_text_ques + user_ans + date_msg+time_msg+Helping_msg
 
 main_msg = '''Hi! Here's a list of stuff I can help with you with:
 #weather PLACE: Check out the weather at any place.
@@ -79,21 +83,20 @@ main_msg = '''Hi! Here's a list of stuff I can help with you with:
 #advice: We’ll send you an awesome advice whenever you want it.'''
 
 
-# for i in range(len(text)):
-#     print(text[i])
-
-
 while True:
     inp = input("Type To Chat With Bot: ")
+# for checking the msg you typed is present in our list
     def checkifexist(items):
         for i in range(len(items)):
             if (inp.lower() == items[i]):
                 return True
         return False
-
+# for printing random Answers From Our Given List
     def printrandom(items):
         rand = random.choice(items)
         print(rand.strip().capitalize())
+
+# it check hash and used for fetching different api and answer the user response
 
     def checkHash(item):
         if(item[0]=='#'):
@@ -102,18 +105,22 @@ while True:
                 if(items[0]==hash_msg[i]):
                     return True
             return False
-        
-
+       
+# Checks Different Input and Analyse them
 
     if(checkifexist(text) == True):
         if(checkifexist(greeting_text_ques) == True):
             printrandom(greeting_text_answer)
+            print(main_msg)
 
         elif(checkifexist(greeting_msg_ques) == True):
             printrandom(greeting_msg_answer)
 
         elif(checkifexist(user_ans) == True):
             printrandom(thanks_msg)
+            
+        elif(checkifexist(Helping_msg) == True):
+            printrandom(main_msg)
 
         elif(checkifexist(date_msg)==True):
             date = datetime.datetime.now()
@@ -127,26 +134,32 @@ while True:
 
         elif(inp.lower() == 'quit'):
             break
-
+# from here hash things starts and use different api to fetch apis
     elif(checkHash(inp)==True):
         inp = inp.split(' ')
+#       fetch wikipedia api and gives details
         if(inp[0]=='#wiki'):
             query =""
             for i in range(len(inp)-1):
                 query+=inp[i+1]
             w = wiki.summary(query)
             print(w)
+            
+#       open webbrowser and serach for different apis
         elif(inp[0]=='#open'):
             query =""
             for i in range(len(inp)-1):
                 query+=inp[i+1]
             a = wb.open('www.google.com.tr/search?q={}'.format(query))
+            
+#        search different things according to your query
         elif(inp[0]=='#search'):
             query =""
             for i in range(len(inp)-1):
                 query+=inp[i+1]
             a = wiki.search(query,15)
             print(a)
+#       use translate api and fetch detail according to your preffered language
         elif(inp[0]=='#translate'):
             query = ""
             for i in range(len(inp)-2):
@@ -165,6 +178,7 @@ while True:
             a = translate.Translator(to_lang=lang).translate(query)
             print(a)
             
+#        fetch Qoute from api 
         elif(inp[0].lower()=='#quote'):
             url = 'https://quotes.rest/qod?category=management'
             api_token = "AMANDEEP"
@@ -174,6 +188,7 @@ while True:
             author =req.json()['contents']['quotes'][0]['author']
             print(quote,'\n\t\t','BY',author)
 
+#       give detail about country and gives you short details
         elif(inp[0].lower()=='#info'):
             url ='https://restcountries.eu/rest/v2/name/{}'.format(inp[1])
             req =r.get(url)
@@ -190,6 +205,7 @@ while True:
             capital,'\n''Top Level Domain:',topdomain,'\n''Population:',population,'\n'
             'Currency:',currency,'\n''Currency Symbol:',symbol)
 
+#             gives you advice
         elif(inp[0].lower()=='#advice'):
             url = 'https://api.adviceslip.com/advice'
             req = r.get(url)
@@ -197,6 +213,7 @@ while True:
             advice = a['slip']['advice']
             print(advice)
         
+#         show calender
         elif(inp[0].lower()=='#calender' or inp[0].lower()=='#cal'):
             print(inp[1])
             if inp[1][0]=='-':
@@ -209,16 +226,18 @@ while True:
                 else:
                     print('YOU ENTERED A WRONG INPUT ARGUMENT')
             
-
+# show your ip address
         elif(inp[0].lower()=='#ip_address' or inp[0].lower()=='#ip'):
             get_host = s.gethostname()
             get_ip = s.gethostbyname(get_host)
             print(f"Your IP Address is: ",get_ip)
-        
+
+# shows mac address 
         elif(inp[0].lower()=='#mac_address' or inp[0].lower()=='#mac'):
             mac = gm.get_mac_address()
             print("Your MAC Address is: ",mac)
 
+#         shows weather details
         elif(inp[0].lower() =='#weather'):
             api_key = '4187cfb45358eb0a570b1e216b9b127f'
             place =inp[1]
@@ -229,11 +248,13 @@ while True:
             feel_like = req.json()['main']['feels_like']
             print(F'Current Tempurature: {temp} & Feels Like: {feel_like}')
                 
+#               plays a beep sound
         elif(inp[0].lower()=='#beep'):
             freq = input('Enter Frequency between 38 to 32767: ')
             sound = winsound.Beep(int(freq),1000)
             sound
 
+# speak the text you write
         elif(inp[0].lower()=='#speak'):
             a = inp[1:len(inp)]
             def listtostring(a):
@@ -251,7 +272,6 @@ while True:
     else:
         printrandom(eror_msg)
 
-        # Todo: Add The Things you can do msg
 
 
 
